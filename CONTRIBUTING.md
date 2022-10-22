@@ -85,6 +85,8 @@ First thing after checkout, run the following to install auto-formatting using [
 ```
 poetry install && pre-commit install
 ```
+If you're on linux, `python-ldap` can produce problems. For the local developement, you can run instead `poetry install --without windows_exclude && pre-commit install`.
+On linux, make sure that `python-ldap` is installed.
 
 This will enforce certain criteria are fulfilled before every commit.
 

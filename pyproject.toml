@@ -7,7 +7,6 @@ authors = ["Leon Handreke <leonh@ndreke.de>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 Django = "~3.2.16"
-django-ldapdb = "^1.5.1"
 django-weasyprint = "^2.2.0"
 django-extensions = "^3.2.1"
 django-bootstrap-datepicker-plus = "^4.0.0"
@@ -44,6 +43,9 @@ pytest-sugar = "^0.9.5"
 selenium = "^4.5.0"
 factory-boy = "^3.2.1"
 poetryup = "^0.12.3"
+
+[tool.poetry.group.windows_exclude.dependencies]
+django-ldapdb = "^1.5.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
