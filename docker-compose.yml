@@ -17,8 +17,8 @@ services:
   web:
     build: .
     command: bash -c "poetry install &&
-                      poetry run python manage.py compilemessages --ignore \".venv\" &&
-                      poetry run python manage.py runserver_plus 0.0.0.0:80"
+      poetry run python manage.py compilemessages --ignore \".venv\" &&
+      poetry run python manage.py runserver_plus 0.0.0.0:80"
     volumes:
       - .:/app
     environment:
@@ -51,7 +51,31 @@ services:
       - POSTGRES_USER=tapir
     ports:
       - '5432:5432'
-
+  auth:
+    image: quay.io/keycloak/keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+#      - KC_DB=postgres
+#      - KC_DB_URL=jdbc:postgresql://db:5432/tapir
+##      - KC_DB_URL_HOST= db
+##      - KC_DB_URL_DATABASE keycloak
+#      - KC_DB_USERNAME= tapir
+#      - KC_DB_PASSWORD= tapir
+#      - KC_HOSTNAME=localhost
+    command:
+      - start-dev
+      - --import-realm
+    depends_on:
+      - openldap
+    healthcheck:
+      test: "curl -f http://localhost:8080/health/ready || exit 1"
+    volumes:
+      - ./openldap/keycloak/test-realm.json:/opt/keycloak/data/import/test-realm.json
+#      - ./openldap/keycloak/test-users-0.json:/opt/keycloak/data/import/test-users-0.json
+#      - ./openldap/keycloak:/export
   selenium:
     image: selenium/standalone-firefox-debug:latest
     shm_size: '2gb'
@@ -65,7 +89,7 @@ services:
   celery:
     build: .
     command: bash -c "poetry install &&
-                      poetry run celery -A tapir worker -l info"
+      poetry run celery -A tapir worker -l info"
     volumes:
       - .:/app
     environment:
@@ -77,7 +101,7 @@ services:
     build: .
     # --schedule to avoid polluting the app directory
     command: bash -c "poetry install &&
-                      poetry run celery -A tapir beat -l info --schedule /tmp/celerybeat-schedule"
+      poetry run celery -A tapir beat -l info --schedule /tmp/celerybeat-schedule"
     volumes:
       - .:/app
     environment:
