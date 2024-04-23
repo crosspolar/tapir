@@ -24,24 +24,26 @@ services:
     environment:
       VIRTUAL_HOST: localhost
       DEBUG: 1
+    ports:
+      - "8000:80"
     depends_on:
       - openldap
       - db
       - selenium
 
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./docker/nginx/certs:/etc/nginx/certs:ro
-      - ./docker/nginx/vhost.d:/etc/nginx/vhost.d:ro
-      - ./docker/nginx/client_auth_certs:/etc/nginx/client_auth_certs:ro
-    ports:
-      - "8000:80"
-      - "8001:443"
-    environment:
-      HTTPS_METHOD: noredirect
-      DEFAULT_HOST: localhost
+#  nginx-proxy:
+#    image: jwilder/nginx-proxy
+#    volumes:
+#      - /var/run/docker.sock:/tmp/docker.sock:ro
+#      - ./docker/nginx/certs:/etc/nginx/certs:ro
+#      - ./docker/nginx/vhost.d:/etc/nginx/vhost.d:ro
+#      - ./docker/nginx/client_auth_certs:/etc/nginx/client_auth_certs:ro
+#    ports:
+#      - "8000:80"
+#      - "8001:443"
+#    environment:
+#      HTTPS_METHOD: noredirect
+#      DEFAULT_HOST: localhost
 
   db:
     image: postgres:14-alpine
@@ -57,33 +59,33 @@ services:
     shm_size: '2gb'
     ports:
       - 5900:5900 # VNC
+#
+#  # Backend for Celery task queue
+#  redis:
+#    image: redis:alpine
 
-  # Backend for Celery task queue
-  redis:
-    image: redis:alpine
-
-  celery:
-    build: .
-    command: bash -c "poetry install &&
-                      poetry run celery -A tapir worker -l info"
-    volumes:
-      - .:/app
-    environment:
-      DEBUG: 1
-    depends_on:
-      - redis
-
-  celery-beat:
-    build: .
-    # --schedule to avoid polluting the app directory
-    command: bash -c "poetry install &&
-                      poetry run celery -A tapir beat -l info --schedule /tmp/celerybeat-schedule"
-    volumes:
-      - .:/app
-    environment:
-      DEBUG: 1
-    depends_on:
-      - redis
+#  celery:
+#    build: .
+#    command: bash -c "poetry install &&
+#                      poetry run celery -A tapir worker -l info"
+#    volumes:
+#      - .:/app
+#    environment:
+#      DEBUG: 1
+#    depends_on:
+#      - redis
+#
+#  celery-beat:
+#    build: .
+#    # --schedule to avoid polluting the app directory
+#    command: bash -c "poetry install &&
+#                      poetry run celery -A tapir beat -l info --schedule /tmp/celerybeat-schedule"
+#    volumes:
+#      - .:/app
+#    environment:
+#      DEBUG: 1
+#    depends_on:
+#      - redis
 
 volumes:
   nginx-certs-volume:
