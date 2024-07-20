@@ -31,16 +31,16 @@
                         {% if request.user.user_watching_shift|user_watching_shift:shift.id %}
                             <a class="{% tapir_button_link %}"
                                href="{% url 'shifts:unwatch_shift' shift.pk %}">
-                                <span class="material-icons">visibility_off</span>{% translate 'Unwatch' %}
+                                <span class="material-icons">notifications_off</span>{% translate 'Unwatch' %}
                             </a>
                             <a class="{% tapir_button_link %}"
                                href="{% url 'shifts:edit_watch_shift' shift.pk %}">
-                                <span class="material-icons">edit_visibility</span>{% translate 'Edit' %}
+                                <span class="material-icons">edit_notifications</span>{% translate 'Edit' %}
                             </a>
                         {% else %}
                             <a class="{% tapir_button_link %}"
                                href="{% url 'shifts:watch_shift' shift.pk %}">
-                                <span class="material-icons">visibility</span>{% translate 'Watch' %}
+                                <span class="material-icons">notifications</span>{% translate 'Watch' %}
                             </a>
                         {% endif %}
                         <a class="{% tapir_button_link %}"
