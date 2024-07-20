@@ -8,7 +8,7 @@ from django.core.management import call_command
 from django.db import transaction
 from django.db.models import Sum
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.defaulttags import register
 from django.urls import reverse
 from django.utils import timezone
@@ -40,6 +40,7 @@ from tapir.settings import (
 from tapir.shifts.forms import (
     ShiftUserDataForm,
     CreateShiftAccountEntryForm,
+    ShiftWatchForm,
 )
 from tapir.shifts.models import (
     Shift,
@@ -516,3 +517,25 @@ def unwatch_shift(request, shift_id):
 @register.filter
 def user_watching_shift(user, shift_id) -> bool:
     return user.filter(shift_watched_id=shift_id).exists()
+
+
+class ShiftWatchEditView(LoginRequiredMixin, TapirFormMixin, UpdateView):
+    model = ShiftWatch
+    form_class = ShiftWatchForm
+    slug_field = "shift_watched_id"
+    slug_url_kwarg = "shift_watched_id"
+    # shift_to_watch = get_object_or_404(Shift, id=shift_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["card_title"] = _("Update your notification times")
+        # context["help_text"] = _(
+        #     "Shifts are generated every day at midnight. After you created the ABCD shift, come back tomorrow to see your shifts!"
+        # )
+        return context
+
+    def get_shift(self):
+        return get_object_or_404(Shift, id=self.kwargs.get("shift_watched_id"))
+
+    def get_success_url(self):
+        return self.get_shift().get_absolute_url()

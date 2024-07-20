@@ -254,4 +254,9 @@ urlpatterns = [
     ),
     path("watch_shift/<int:shift_id>/", views.watch_shift, name="watch_shift"),
     path("unwatch_shift/<int:shift_id>/", views.unwatch_shift, name="unwatch_shift"),
+    path(
+        "edit_watch_shift/<int:shift_watched_id>",
+        views.ShiftWatchEditView.as_view(),
+        name="edit_watch_shift",
+    ),
 ]

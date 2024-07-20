@@ -33,6 +33,10 @@
                                href="{% url 'shifts:unwatch_shift' shift.pk %}">
                                 <span class="material-icons">visibility_off</span>{% translate 'Unwatch' %}
                             </a>
+                            <a class="{% tapir_button_link %}"
+                               href="{% url 'shifts:edit_watch_shift' shift.pk %}">
+                                <span class="material-icons">edit_visibility</span>{% translate 'Edit' %}
+                            </a>
                         {% else %}
                             <a class="{% tapir_button_link %}"
                                href="{% url 'shifts:watch_shift' shift.pk %}">

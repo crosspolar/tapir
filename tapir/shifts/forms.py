@@ -20,6 +20,7 @@ from tapir.shifts.models import (
     ShiftExemption,
     SHIFT_SLOT_WARNING_CHOICES,
     ShiftTemplate,
+    ShiftWatch,
 )
 from tapir.utils.forms import DateInputTapir
 from tapir.utils.user_utils import UserUtils
@@ -392,3 +393,14 @@ class ConvertShiftExemptionToMembershipPauseForm(forms.Form):
         ),
         required=True,
     )
+
+
+class ShiftWatchForm(forms.ModelForm):
+    class Meta:
+        model = ShiftWatch
+        fields = ["notification_timedelta"]
+        widgets = {
+            "notification_timedelta": forms.NumberInput(
+                attrs={"type": "number", "step": 3}
+            ),
+        }
