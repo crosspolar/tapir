@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django import forms
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.forms import ModelChoiceField, CheckboxSelectMultiple, BooleanField
@@ -396,11 +398,18 @@ class ConvertShiftExemptionToMembershipPauseForm(forms.Form):
 
 
 class ShiftWatchForm(forms.ModelForm):
+    def clean_notification_timedelta(self):
+        time = self.data["notification_timedelta"]
+        return timedelta(hours=int(time))
+
     class Meta:
         model = ShiftWatch
         fields = ["notification_timedelta"]
         widgets = {
             "notification_timedelta": forms.NumberInput(
-                attrs={"type": "number", "step": 3}
+                attrs={
+                    "type": "number",
+                    "step": 3,
+                }
             ),
         }
