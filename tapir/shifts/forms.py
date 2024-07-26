@@ -1,3 +1,4 @@
+import datetime
 from datetime import timedelta
 
 from django import forms
@@ -397,6 +398,11 @@ class ConvertShiftExemptionToMembershipPauseForm(forms.Form):
     )
 
 
+class NotificationDurationField(forms.Field):
+    def prepare_value(self, value: datetime.timedelta) -> int:
+        return int(value.total_seconds() / 3600)
+
+
 class ShiftWatchForm(forms.ModelForm):
     def clean_notification_timedelta(self):
         time = self.data["notification_timedelta"]
@@ -405,6 +411,7 @@ class ShiftWatchForm(forms.ModelForm):
     class Meta:
         model = ShiftWatch
         fields = ["notification_timedelta"]
+        field_classes = {"notification_timedelta": NotificationDurationField}
         widgets = {
             "notification_timedelta": forms.NumberInput(
                 attrs={
