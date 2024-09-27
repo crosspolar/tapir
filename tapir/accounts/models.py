@@ -16,7 +16,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from tapir import utils, settings
 from tapir.coop.config import get_ids_of_users_registered_to_a_shift_with_capability
 from tapir.core.config import help_text_displayed_name
-from tapir.core.tapir_email_base import get_mails_not_mandatory
+from tapir.core.tapir_email_base import get_mails_not_mandatory, get_mail_types
 from tapir.log.models import UpdateModelLogEntry
 from tapir.settings import (
     PERMISSIONS,
@@ -62,7 +62,7 @@ class TapirUserManager(UserManager.from_queryset(TapirUserQuerySet)):
 
 
 def get_mails_not_mandatory_and_default():
-    return [m[0] for m in get_mails_not_mandatory(default=True)]
+    return [m[0] for m in get_mail_types(mandatory=False, enabled_by_default=True)]
 
 
 class TapirUser(AbstractUser):
