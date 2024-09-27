@@ -42,7 +42,7 @@ def get_mail_types(
     ]
 
 
-def get_mails_not_mandatory() -> List[Tuple[str, str]]:
+def get_optional_mails() -> List[Tuple[str, str]]:
     return get_mail_types(mandatory=False, enabled_by_default="both")
 
 
@@ -133,7 +133,7 @@ class TapirEmailBase:
         )
 
     def user_wants_to_or_has_to_receive_mail(self, user: TapirUser):
-        return (self.get_unique_id() in user.additional_mails) | (
+        return (self.get_unique_id() in user.optional_mails) | (
             self.get_unique_id() in [x[0] for x in get_mail_types(mandatory=True)]
         )
 

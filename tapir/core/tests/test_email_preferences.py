@@ -33,7 +33,7 @@ class TestVoluntaryMails(TapirFactoryTestBase):
 
     def test_userWantsToOrHasToReceiveMail_mailSubscribedTo_shouldReceiveMail(self):
         tapir_user: TapirUser = TapirUserFactory.create()
-        tapir_user.additional_mails = ["tapir.coop.voluntaryTestMail"]
+        tapir_user.optional_mails = ["tapir.coop.voluntaryTestMail"]
 
         self.assertTrue(
             VoluntaryMail().user_wants_to_or_has_to_receive_mail(user=tapir_user)
