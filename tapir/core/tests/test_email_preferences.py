@@ -6,7 +6,7 @@ from tapir.utils.tests_utils import TapirFactoryTestBase
 
 
 class VoluntaryMail(TapirEmailBase):
-    mandatory = False
+    optional = True
 
     @classmethod
     def get_unique_id(cls) -> str:
@@ -41,8 +41,8 @@ class TestVoluntaryMails(TapirFactoryTestBase):
 
     def test_userWantsToOrHasToReceiveMail_mailIsMandatory_shouldReceiveMail(self):
         tapir_user: TapirUser = TapirUserFactory.create()
-        self.assertTrue(
-            TapirAccountCreatedEmail.mandatory
+        self.assertFalse(
+            TapirAccountCreatedEmail.optional
         )  # change to another mail-type if necessary
 
         self.assertTrue(

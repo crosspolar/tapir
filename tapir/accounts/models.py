@@ -62,7 +62,7 @@ class TapirUserManager(UserManager.from_queryset(TapirUserQuerySet)):
 
 
 def get_optional_mails_enabledbydefault():
-    return [m[0] for m in get_mail_types(mandatory=False, enabled_by_default=True)]
+    return [m[0] for m in get_mail_types(optional=True, enabled_by_default=True)]
 
 
 class TapirUser(AbstractUser):

@@ -16,11 +16,11 @@ from tapir.utils.forms import DateInputTapir, TapirPhoneNumberField
 class TapirUserSelfUpdateForm(forms.ModelForm):
     mandatory_mails = forms.MultipleChoiceField(
         required=False,
-        choices=get_mail_types(enabled_by_default="both", mandatory=True),
+        choices=get_mail_types(enabled_by_default="both", optional=False),
         label=_("Mandatory Emails"),
         widget=CheckboxSelectMultiple(),
         initial=[
-            m[0] for m in get_mail_types(enabled_by_default="both", mandatory=True)
+            m[0] for m in get_mail_types(enabled_by_default="both", optional=False)
         ],
     )
 
@@ -33,7 +33,7 @@ class TapirUserSelfUpdateForm(forms.ModelForm):
         fields = ["usage_name", "pronouns", "optional_mails"]
         widgets = {
             "optional_mails": forms.widgets.CheckboxSelectMultiple(
-                choices=get_mail_types(enabled_by_default="both", mandatory=False)
+                choices=get_mail_types(enabled_by_default="both", optional=True)
             )
         }
 
