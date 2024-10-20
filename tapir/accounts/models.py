@@ -84,17 +84,6 @@ class TapirUser(AbstractUser):
     allows_purchase_tracking = models.BooleanField(
         _("Allow purchase tracking"), blank=False, null=False, default=False
     )
-    optional_mails = ArrayField(
-        models.CharField(
-            max_length=128,
-            blank=False,
-            choices=get_optional_mails,
-        ),
-        # in the beginning, select all mails which are enabled by default
-        default=get_optional_mails_enabledbydefault,
-        blank=True,
-        null=False,
-    )
     excluded_fields_for_logs = ["password"]
 
     preferred_language = models.CharField(
@@ -275,3 +264,27 @@ def language_middleware(get_response):
         return response
 
     return middleware
+
+
+class OptionalMails(models.Model):
+    user = models.ForeignKey(
+        "accounts.TapirUser",
+        null=False,
+        related_name="mail_setting",
+        on_delete=models.CASCADE,
+    )
+    mail_id = models.CharField(
+        max_length=256,
+        blank=False,
+        choices=get_optional_mails,
+    )
+    is_requested = models.BooleanField(
+        default=True, verbose_name="Is this mail requested by the user?"
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "mail_id"], name="user-mail-constraint"
+            )
+        ]

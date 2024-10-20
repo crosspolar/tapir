@@ -30,12 +30,8 @@ class TapirUserSelfUpdateForm(forms.ModelForm):
 
     class Meta:
         model = TapirUser
-        fields = ["usage_name", "pronouns", "optional_mails"]
-        widgets = {
-            "optional_mails": forms.widgets.CheckboxSelectMultiple(
-                choices=get_mail_types(enabled_by_default="both", optional=True)
-            )
-        }
+        fields = ["usage_name", "pronouns"]
+        widgets = {}
 
 
 class TapirUserForm(TapirUserSelfUpdateForm):
