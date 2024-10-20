@@ -2,7 +2,6 @@ import logging
 
 import ldap
 from django.contrib.auth.models import AbstractUser, UserManager, User
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils import translation
@@ -266,6 +265,17 @@ def language_middleware(get_response):
     return middleware
 
 
+class Mail(models.Model):
+    name = models.CharField(
+        max_length=256,
+        blank=False,
+        choices=get_optional_mails,
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class OptionalMails(models.Model):
     user = models.ForeignKey(
         "accounts.TapirUser",
@@ -273,18 +283,14 @@ class OptionalMails(models.Model):
         related_name="mail_setting",
         on_delete=models.CASCADE,
     )
-    mail_id = models.CharField(
-        max_length=256,
-        blank=False,
-        choices=get_optional_mails,
-    )
-    is_requested = models.BooleanField(
-        default=True, verbose_name="Is this mail requested by the user?"
+    is_requested = models.ForeignKey(
+        Mail,
+        on_delete=models.CASCADE,
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "mail_id"], name="user-mail-constraint"
+                fields=["user", "is_requested"], name="user-mail-constraint"
             )
         ]

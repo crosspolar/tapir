@@ -5,7 +5,7 @@ from django.forms import TextInput, CheckboxSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from tapir import settings
-from tapir.accounts.models import TapirUser
+from tapir.accounts.models import TapirUser, OptionalMails
 from tapir.core.tapir_email_base import (
     get_mail_types,
 )
@@ -116,3 +116,32 @@ class EditUsernameForm(forms.ModelForm):
             raise ValidationError(_("This username is not available."))
 
         return self.cleaned_data["username"]
+
+
+class OptionalMailsForm(forms.Form):
+    #
+    #     # class Meta:
+    #     #     model = OptionalMails
+    #     #     fields = ["is_requested"]
+    #     #     widgets = {
+    #     #         "is_requested": CheckboxSelectMultiple(
+    #     #             choices=get_mail_types(optional=True),
+    #     #         )
+    #     #     }
+    #
+    optional_mails = forms.ModelMultipleChoiceField(
+        queryset=OptionalMails.objects.all(),
+        # choices=get_mail_types(optional=True),
+        widget=forms.CheckboxSelectMultiple(),
+        label=_("Optional Mails"),
+    )
+
+
+#
+#
+# def __init__(self, *args, **kwargs):
+#     self.tapir_user: TapirUser = kwargs.pop("user")
+#     super().__init__(*args, **kwargs)
+#     self.fields["optional_mails"].queryset = OptionalMails.objects.filter(
+#         user=self.tapir_user
+#     )

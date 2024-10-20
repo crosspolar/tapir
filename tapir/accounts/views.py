@@ -20,6 +20,7 @@ from tapir.accounts.forms import (
     EditUserLdapGroupsForm,
     TapirUserSelfUpdateForm,
     EditUsernameForm,
+    OptionalMailsForm,
 )
 from tapir.accounts.models import (
     TapirUser,
@@ -330,3 +331,20 @@ class EditUsernameView(LoginRequiredMixin, PermissionRequiredMixin, generic.Upda
             ).save()
 
         return response
+
+
+class MailSettingsView(
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    TapirFormMixin,
+    generic.FormView,
+):
+    template_name = "accounts/mailsettings.html"
+    form_class = OptionalMailsForm
+
+    def get_success_url(self):
+        return get_object_or_404(TapirUser, pk=self.kwargs["pk"]).get_absolute_url()
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
