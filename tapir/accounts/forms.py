@@ -14,19 +14,9 @@ from tapir.utils.forms import DateInputTapir, TapirPhoneNumberField
 
 
 class TapirUserSelfUpdateForm(forms.ModelForm):
-    mandatory_mails = forms.MultipleChoiceField(
-        required=False,
-        choices=get_mail_types(enabled_by_default="both", optional=False),
-        label=_("Mandatory Emails"),
-        widget=CheckboxSelectMultiple(),
-        initial=[
-            m[0] for m in get_mail_types(enabled_by_default="both", optional=False)
-        ],
-    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["mandatory_mails"].disabled = True
 
     class Meta:
         model = TapirUser
@@ -128,9 +118,21 @@ class OptionalMailsForm(forms.Form):
         required=False,
     )
 
+    mandatory_mails = forms.MultipleChoiceField(
+        required=False,
+        choices=get_mail_types(enabled_by_default="both", optional=False),
+        label=_("Mandatory Emails"),
+        widget=CheckboxSelectMultiple(),
+        initial=[
+            m[0] for m in get_mail_types(enabled_by_default="both", optional=False)
+        ],
+    )
+
     def __init__(self, *args, **kwargs):
         tapir_user: TapirUser = kwargs.pop("tapir_user")
         super().__init__(*args, **kwargs)
+        self.fields["mandatory_mails"].disabled = True
+
         self.fields["optional_mails"].initial = list(
             OptionalMails.objects.filter(user=tapir_user).values_list(
                 "mail__name", flat=True
