@@ -338,7 +338,7 @@ class EditUsernameView(LoginRequiredMixin, PermissionRequiredMixin, generic.Upda
 class MailSettingsView(
     LoginRequiredMixin,
     PermissionRequiredMixin,
-    # TapirFormMixin,
+    TapirFormMixin,
     generic.FormView,
 ):
     template_name = "accounts/mailsettings.html"
