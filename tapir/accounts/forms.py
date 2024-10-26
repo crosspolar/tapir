@@ -119,29 +119,20 @@ class EditUsernameForm(forms.ModelForm):
 
 
 class OptionalMailsForm(forms.Form):
-    #
-    #     # class Meta:
-    #     #     model = OptionalMails
-    #     #     fields = ["is_requested"]
-    #     #     widgets = {
-    #     #         "is_requested": CheckboxSelectMultiple(
-    #     #             choices=get_mail_types(optional=True),
-    #     #         )
-    #     #     }
-    #
-    optional_mails = forms.ModelMultipleChoiceField(
-        queryset=OptionalMails.objects.all(),
-        # choices=get_mail_types(optional=True),
+
+    optional_mails = forms.MultipleChoiceField(
+        # queryset=OptionalMails.objects.all(),
+        choices=get_mail_types(optional=True),
         widget=forms.CheckboxSelectMultiple(),
         label=_("Optional Mails"),
+        required=False,
     )
 
-
-#
-#
-# def __init__(self, *args, **kwargs):
-#     self.tapir_user: TapirUser = kwargs.pop("user")
-#     super().__init__(*args, **kwargs)
-#     self.fields["optional_mails"].queryset = OptionalMails.objects.filter(
-#         user=self.tapir_user
-#     )
+    def __init__(self, *args, **kwargs):
+        tapir_user: TapirUser = kwargs.pop("tapir_user")
+        super().__init__(*args, **kwargs)
+        self.fields["optional_mails"].initial = list(
+            OptionalMails.objects.filter(user=tapir_user).values_list(
+                "mail__name", flat=True
+            )
+        )

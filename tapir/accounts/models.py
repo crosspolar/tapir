@@ -267,9 +267,7 @@ def language_middleware(get_response):
 
 class Mail(models.Model):
     name = models.CharField(
-        max_length=256,
-        blank=False,
-        choices=get_optional_mails,
+        max_length=256, blank=False, choices=get_optional_mails, unique=True
     )
 
     def __str__(self):
@@ -283,7 +281,7 @@ class OptionalMails(models.Model):
         related_name="mail_setting",
         on_delete=models.CASCADE,
     )
-    is_requested = models.ForeignKey(
+    mail = models.ForeignKey(
         Mail,
         on_delete=models.CASCADE,
     )
@@ -291,6 +289,6 @@ class OptionalMails(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "is_requested"], name="user-mail-constraint"
+                fields=["user", "mail"], name="user-mail-constraint"
             )
         ]

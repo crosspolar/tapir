@@ -51,9 +51,9 @@ accounts_urlpatterns = [
         name="edit_username",
     ),
     path(
-        "user/<int:pk>/mails_settings",
+        "user/<int:pk>/mail_settings",
         views.MailSettingsView.as_view(),
-        name="edit_username",
+        name="mail_settings",
     ),
 ]
 
