@@ -265,10 +265,16 @@ def language_middleware(get_response):
     return middleware
 
 
-class Mail(models.Model):
-    name = models.CharField(
-        max_length=256, blank=False, choices=get_optional_mails, unique=True
-    )
+class MailChoice(models.Model):
+    name = models.CharField(max_length=256, blank=False, choices=get_optional_mails)
+    choice = models.BooleanField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "choice"], name="mail-name-chosen-constraint"
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -282,7 +288,7 @@ class OptionalMails(models.Model):
         on_delete=models.CASCADE,
     )
     mail = models.ForeignKey(
-        Mail,
+        MailChoice,
         on_delete=models.CASCADE,
     )
 

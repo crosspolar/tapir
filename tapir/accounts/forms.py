@@ -1,3 +1,5 @@
+from typing import List
+
 from django import forms
 from django.contrib.auth import forms as auth_forms
 from django.core.exceptions import ValidationError
@@ -108,10 +110,29 @@ class EditUsernameForm(forms.ModelForm):
         return self.cleaned_data["username"]
 
 
+def all_optional_mails_by_user(user: TapirUser) -> List[str]:
+    """
+    unique mail-ids from both lists
+    """
+    user_mails_wanted = list(
+        OptionalMails.objects.filter(user=user, mail__choice=True).values_list(
+            "mail__name", flat=True
+        )
+    )
+    user_mails_not_wanted = list(
+        OptionalMails.objects.filter(user=user, mail__choice=False).values_list(
+            "mail__name", flat=True
+        )
+    )
+    other_optional_mails = [
+        x[0] for x in get_mail_types(optional=True) if x[0] not in user_mails_not_wanted
+    ]
+    return list(set(user_mails_wanted).intersection(set(other_optional_mails)))
+
+
 class OptionalMailsForm(forms.Form):
 
     optional_mails = forms.MultipleChoiceField(
-        # queryset=OptionalMails.objects.all(),
         choices=get_mail_types(optional=True),
         widget=forms.CheckboxSelectMultiple(),
         label=_("Optional Mails"),
@@ -133,8 +154,6 @@ class OptionalMailsForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["mandatory_mails"].disabled = True
 
-        self.fields["optional_mails"].initial = list(
-            OptionalMails.objects.filter(user=tapir_user).values_list(
-                "mail__name", flat=True
-            )
+        self.fields["optional_mails"].initial = all_optional_mails_by_user(
+            user=tapir_user
         )
