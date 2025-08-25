@@ -34,8 +34,7 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
         id: build_changelog
         with:
-          config: https://github.com/orhun/git-cliff/blob/main/examples/github.toml?raw=true
-          args: --verbose
+          args: --verbose --config-url https://github.com/orhun/git-cliff/blob/main/examples/github.toml?raw=true
 
       - name: Draft release with changelog
         id: create_release
