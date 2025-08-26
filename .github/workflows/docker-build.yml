@@ -34,7 +34,7 @@ jobs:
           GITHUB_REPO: ${{ github.repository }}
         id: build_changelog
         with:
-          args: --verbose --latest
+          args: --verbose --latest --strip header
 
       - name: Draft release with changelog
         id: create_release
