@@ -27,29 +27,21 @@ jobs:
         id: build_changelog
         with:
           config: https://github.com/orhun/git-cliff/blob/main/examples/github.toml
-          args: --verbose --unreleased --strip header --bump ${{ github.event.inputs.release_tag }}
-      - name: Set RELEASE_TAG
-        id: set_release_tag
-        run: |
-          if [ -n "${{ github.event.inputs.release_tag }}" ]; then
-            echo "RELEASE_TAG=${{ github.event.inputs.release_tag }}" >> $GITHUB_ENV
-          else
-            echo "RELEASE_TAG=${{ steps.build_changelog.outputs.version }}" >> $GITHUB_ENV
-          fi
+          args: --verbose --unreleased --strip header ${{ github.event.inputs.release_tag == '' && '--bump' || format('--tag {0}', github.event.inputs.release_tag) }}
       - name: Create Tag
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag -a "${{ env.RELEASE_TAG }}" -m "Release ${{ env.RELEASE_TAG }}"
-          git push origin "${{ env.RELEASE_TAG }}"
+          git tag -a "${{ steps.build_changelog.outputs.version }}" -m "Release ${{ steps.build_changelog.outputs.version }}"
+          git push origin "${{ steps.build_changelog.outputs.version }}"
       - name: Draft release with changelog
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          release_name: Tapir ${{ env.RELEASE_TAG }}
+          tag_name: ${{ steps.build_changelog.outputs.version }}
+          release_name: Tapir ${{ steps.build_changelog.outputs.version }}
           body: ${{steps.build_changelog.outputs.content}}
   build-and-push-image:
     runs-on: ubuntu-latest
