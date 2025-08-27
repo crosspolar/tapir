@@ -27,7 +27,7 @@ jobs:
         id: build_changelog
         with:
           config: https://github.com/orhun/git-cliff/blob/main/examples/github.toml
-          args: --verbose --latest --strip header --bump ${{ github.event.inputs.release_tag }}
+          args: --verbose --unreleased --strip header --bump ${{ github.event.inputs.release_tag }}
       - name: Set RELEASE_TAG
         id: set_release_tag
         run: |
