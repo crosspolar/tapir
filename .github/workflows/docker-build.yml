@@ -27,7 +27,7 @@ jobs:
         id: build_changelog
         with:
           config: https://github.com/orhun/git-cliff/blob/main/examples/github.toml
-          args: --verbose --unreleased
+          args: --verbose --unreleased --strip header ${{ github.event.inputs.release_tag == '' && '--bump' || format('--tag {0}', github.event.inputs.release_tag) }}
       - name: Create Tag
         run: |
           git config --local user.email "action@github.com"
