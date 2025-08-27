@@ -43,12 +43,12 @@ jobs:
           tag_name: ${{ steps.build_changelog.outputs.version }}
           release_name: Tapir ${{ steps.build_changelog.outputs.version }}
           body: ${{steps.build_changelog.outputs.content}}
+
   build-and-push-image:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
