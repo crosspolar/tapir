@@ -10,7 +10,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  RELEASE_TAG: ${{ github.event.inputs.release_tag || steps.build_changelog.outputs.version }}
 jobs:
   prepare-changelog-and-changelog:
     if: github.ref == 'refs/heads/master'
@@ -29,6 +28,14 @@ jobs:
         with:
           config: https://github.com/orhun/git-cliff/blob/main/examples/github.toml
           args: --verbose --latest --strip header --bump ${{ github.event.inputs.release_tag }}
+      - name: Set RELEASE_TAG
+        id: set_release_tag
+        run: |
+          if [ -n "${{ github.event.inputs.release_tag }}" ]; then
+            echo "RELEASE_TAG=${{ github.event.inputs.release_tag }}" >> $GITHUB_ENV
+          else
+            echo "RELEASE_TAG=${{ steps.build_changelog.outputs.version }}" >> $GITHUB_ENV
+          fi
       - name: Create Tag
         run: |
           git config --local user.email "action@github.com"
