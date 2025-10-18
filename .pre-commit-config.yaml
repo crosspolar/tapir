@@ -13,3 +13,10 @@ repos:
     hooks:
       - id: djlint-reformat-django
       - id: djlint-django
+  - repo: local
+    hooks:
+      - id: check-translations
+        name: Check Translations
+        entry: docker compose run web make check-translations
+        language: system
+        stages: [pre-push]
