@@ -15,8 +15,8 @@ repos:
       - id: djlint-django
   - repo: local
     hooks:
-      - id: check-translations
-        name: Check Translations
-        entry: docker compose run web make check-translations
+      - id: check-django-translations
+        name: Check Django Translations
+        entry: bash -c "poetry run python manage.py makemessages --ignore=*.pyc --dry-run --check"
         language: system
         stages: [pre-push]
