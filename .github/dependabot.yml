@@ -5,3 +5,9 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    # docs: If you only require security updates and want to exclude version updates, you can set open-pull-requests-limit to 0 in order to prevent version updates for a given package-ecosystem.
+    open-pull-requests-limit: 0
